@@ -168,6 +168,23 @@
             text-align: right;
         }
 
+        .donut-chart-container {
+            position: relative;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .donut-center-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
         @media (max-width: 768px) {
             .dashboard-container {
                 grid-template-columns: 1fr;
@@ -187,6 +204,7 @@
 </head>
 <body>
     <div class="dashboard-container">
+        <!-- First Row -->
         <div class="row">
             <!-- Weekly Statistics Chart -->
             <div class="col-lg-7 col-md-12">
@@ -303,6 +321,55 @@
                 </div>
             </div>
         </div>
+
+        <!-- Second Row -->
+        <div class="row">
+            <!-- Applications Received Time -->
+            <div class="col-lg-7 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Applications Received Time</h2>
+                        <div class="time-selector" id="todaySelector">
+                            <svg class="time-selector-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+                            </svg>
+                            <span class="time-selector-text">Today</span>
+                            <span>▼</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidates by Gender -->
+            <div class="col-lg-5 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Candidates by Gender</h2>
+                    </div>
+                    <div class="donut-chart-container">
+                        <canvas id="genderChart"></canvas>
+                        <div class="donut-center-icon">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="#9f7aea"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="legend-container">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #805ad5;"></div>
+                            <span class="legend-text">Male</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #f56565;"></div>
+                            <span class="legend-text">Female</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -311,32 +378,25 @@
             labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             datasets: [
                 {
-                    label: 'Applications',
-                    data: [85, 77, 90, 78, 95, 98, 92],
-                    backgroundColor: '#805ad5',
-                    borderRadius: 8,
-                    barThickness: 20
+                    label: 'Rejected',
+                    data: [20, 20, 20, 20, 20, 20, 20],
+                    backgroundColor: '#f56565',
+                    borderRadius: 0,
+                    barThickness: 25
                 },
                 {
                     label: 'Shortlisted',
-                    data: [68, 60, 70, 63, 65, 70, 68],
+                    data: [45, 40, 48, 43, 45, 50, 48],
                     backgroundColor: '#ecc94b',
-                    borderRadius: 8,
-                    barThickness: 20
+                    borderRadius: 0,
+                    barThickness: 25
                 },
                 {
-                    label: 'Rejected',
-                    data: [50, 45, 48, 45, 40, 38, 42],
-                    backgroundColor: '#f56565',
-                    borderRadius: 8,
-                    barThickness: 20
-                },
-                {
-                    label: 'On Hold',
-                    data: [20, 20, 20, 20, 20, 20, 20],
-                    backgroundColor: '#c3bef0',
-                    borderRadius: 8,
-                    barThickness: 20
+                    label: 'Applications',
+                    data: [20, 17, 22, 15, 30, 28, 24],
+                    backgroundColor: '#805ad5',
+                    borderRadius: 0,
+                    barThickness: 25
                 }
             ]
         };
@@ -366,6 +426,7 @@
                 },
                 scales: {
                     x: {
+                        stacked: true,
                         grid: {
                             display: false
                         },
@@ -378,6 +439,7 @@
                         }
                     },
                     y: {
+                        stacked: true,
                         beginAtZero: true,
                         max: 100,
                         ticks: {
@@ -402,6 +464,128 @@
         const ctx = document.getElementById('weeklyChart').getContext('2d');
         const weeklyChart = new Chart(ctx, config);
 
+        // Timeline Chart Data (Applications Received Time)
+        const timelineData = {
+            labels: ['8 AM', '10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM'],
+            datasets: [{
+                label: 'Applications',
+                data: [50, 68, 72, 95, 65, 85, 90],
+                borderColor: '#f56565',
+                backgroundColor: 'rgba(245, 101, 101, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#f56565',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointHoverBackgroundColor: '#f56565',
+                borderWidth: 2.5
+            }]
+        };
+
+        const timelineConfig = {
+            type: 'line',
+            data: timelineData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        borderRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + '% applications';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#a0aec0',
+                            font: {
+                                size: 13,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            color: '#a0aec0',
+                            font: {
+                                size: 12
+                            },
+                            stepSize: 25
+                        },
+                        grid: {
+                            color: '#e2e8f0',
+                            drawBorder: false
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        };
+
+        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+        const timelineChart = new Chart(timelineCtx, timelineConfig);
+
+        // Gender Donut Chart
+        const genderData = {
+            labels: ['Male', 'Female'],
+            datasets: [{
+                data: [35, 65],
+                backgroundColor: ['#805ad5', '#f56565'],
+                borderWidth: 0,
+                cutout: '75%'
+            }]
+        };
+
+        const genderConfig = {
+            type: 'doughnut',
+            data: genderData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        borderRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        const genderChart = new Chart(genderCtx, genderConfig);
+
         // Animate Progress Bars
         window.addEventListener('load', () => {
             setTimeout(() => {
@@ -420,6 +604,13 @@
         document.getElementById('monthSelector').addEventListener('click', () => {
             alert('Month selector clicked! You can implement dropdown functionality here.');
         });
+
+        document.getElementById('todaySelector').addEventListener('click', () => {
+            alert('Today selector clicked! You can implement dropdown functionality here.');
+        });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="charts-init.js"></script>
 </body>
 </html>

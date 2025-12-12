@@ -1,0 +1,49 @@
+$bg: #f7f8fb;
+$card-bg: #ffffff;
+$muted: #9aa0b4;
+
+$purple: #6b4cff; // Applications
+$yellow: #ffd74d; // Shortlisted
+$orange: #ff7b52; // Rejected
+$light: #eef1fb;  // On Hold
+
+.chart-card {
+  background: $card-bg;
+  border-radius: 12px;
+  padding: 1rem;
+  .card-body {
+    padding: 1.25rem 1.5rem;
+  }
+}
+
+/* Canvas container tweaks */
+canvas {
+  display: block;
+}
+
+/* Legend styles */
+.chart-legend {
+  font-size: 0.9rem;
+  color: $muted;
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    .swatch {
+      width: 14px;
+      height: 14px;
+      display: inline-block;
+      border-radius: 4px;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06) inset;
+    }
+    .swatch-apps { background: linear-gradient(180deg, $purple, darken($purple, 6%)); }
+    .swatch-shortlisted { background: linear-gradient(180deg, $yellow, darken($yellow, 6%)); }
+    .swatch-rejected { background: linear-gradient(180deg, $orange, darken($orange, 6%)); }
+    .swatch-onhold { background: $light; border: 1px solid rgba(0,0,0,0.04); }
+  }
+}
+
+/* small responsive adjustments */
+@media (max-width: 576px) {
+  .card-title { font-size: 1rem; }
+}

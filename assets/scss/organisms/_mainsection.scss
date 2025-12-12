@@ -1,0 +1,375 @@
+$card-bg: #ffffff;
+$accent: #6f3cf1;
+$muted: #9aa0b4;
+$shadow: rgba(20,20,40,0.06);
+
+.main-section {
+  padding: 20px 16px;
+
+  &__head1 {
+    font-size: 32px;
+    font-weight: bold;
+  }
+
+  // Use a namespaced card to avoid Bootstrap's .card conflicts
+  .stat-card {
+    position: relative;       // <- so .menu absolute is positioned correctly
+    width: 100%;
+    max-width: 380px;         // responsive inside Bootstrap col
+    background: $card-bg;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px $shadow;
+    padding: 20px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+
+    .left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .label {
+      color: $muted;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .big {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin: 0;
+    }
+
+    .sub {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+      color: $muted;
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: $accent;
+      box-shadow: 0 0 8px rgba(111,60,241,0.18);
+    }
+
+    .right {
+      width: 108px;
+      height: 108px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* Chart.js wrapper (added) */
+    .chart-wrap {
+      width: 108px;
+      height: 108px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* force consistent canvas sizing for Chart.js (override any external styles) */
+    .chart-wrap canvas {
+      width: 96px !important;
+      height: 96px !important;
+      display: block;
+    }
+
+    /* center badge inside the chart */
+    .percent-badge {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .percent-badge small {
+      font-size: 11px;
+      color: #ffffff;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+    }
+
+    .ring-wrap {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      position: relative;
+      transition: transform 900ms cubic-bezier(.2,.9,.2,1);
+      // keep ring fixed — no rotation
+      transform: rotate(0deg) !important;
+      will-change: transform;
+      // no transition needed for rotation since we never change it
+    }
+
+    .circle-svg {
+      transform: rotate(-90deg);
+      width: 96px;
+      height: 96px;
+      display: block;
+    }
+
+    .percent-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .percent-inner small {
+      font-size: 11px;
+      color: #ffffff;
+      background: linear-gradient(135deg, $accent, #8c61ff);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      box-shadow: 0 6px 14px rgba(111,60,241,0.14);
+    }
+
+    .track { stroke: #eef0f6; stroke-width: 10; fill: none; }
+
+    // smooth stroke animation — longer duration for buttery feel (for SVG fallback)
+    .progress-circle {
+      stroke-linecap: round;
+      stroke-width: 10;
+      fill: none;
+      transition: stroke-dashoffset 1200ms cubic-bezier(.22,.9,.18,1);
+    }
+
+    .menu {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      display: flex;
+      gap: 4px;
+    }
+    .menu span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #e6e9f2;
+    }
+
+    @media (max-width:420px) {
+      max-width: 320px;
+      gap: 12px;
+      padding: 14px;
+      .big { font-size: 26px; }
+      .chart-wrap { width: 86px; height:86px; }
+      .chart-wrap canvas { width: 76px !important; height: 76px !important; }
+    }
+  }
+
+
+  /* charts */
+  
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: none;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .time-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f7fafc;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-selector:hover {
+            background: #edf2f7;
+        }
+
+        .time-selector-icon {
+            width: 20px;
+            height: 20px;
+            fill: #805ad5;
+        }
+
+        .time-selector-text {
+            color: #4a5568;
+            font-weight: 500;
+            margin: 0 0.5rem 0 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 2rem;
+        }
+
+        .legend-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-text {
+            color: #718096;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .stats-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 140px;
+        }
+
+        .stat-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .stat-label {
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .stat-bar-container {
+            flex: 1;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stat-bar {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-out;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .stat-percentage {
+            color: #718096;
+            font-weight: 600;
+            font-size: 1rem;
+            min-width: 45px;
+            text-align: right;
+        }
+
+        .donut-chart-container {
+            position: relative;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .donut-center-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .stat-bar-container {
+                max-width: 150px;
+            }
+        }
+  /*  */
+
+  @include tablet {
+    .stat-card {
+      flex-direction: column;
+    }
+  }
+}

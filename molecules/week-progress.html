@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- styles -->
+    <link rel="stylesheet" href="../assets/css/aos.css">
+    <link rel="stylesheet" href="../assets/css/slick.css">
+    <link rel="stylesheet" href="../assets/css/slick-theme.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- styles -->
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- body content start -->
+     <div class="container py-5">
+    <div class="card chart-card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <h5 class="card-title mb-0">Statistics of Active Applications</h5>
+          <div class="d-flex align-items-center gap-2">
+            <div class="small text-muted me-2">Week</div>
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button">Week</button>
+          </div>
+        </div>
+
+        <div class="row align-items-end gx-0">
+          <div class="col-12">
+            <canvas id="appsChart" height="220"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-legend d-flex gap-3 mt-4 align-items-center">
+          <div class="legend-item"><span class="swatch swatch-apps"></span>Applications</div>
+          <div class="legend-item"><span class="swatch swatch-shortlisted"></span>Shortlisted</div>
+          <div class="legend-item"><span class="swatch swatch-rejected"></span>Rejected</div>
+          <div class="legend-item"><span class="swatch swatch-onhold"></span>On Hold</div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- body content end -->
+
+    <!-- scripts -->
+    <script src="../assets/js/jquery.slim.min.js"></script>
+    <script src="../assets/js/aos.js"></script>
+    <script src="../assets/js/slick.min.js"></script>
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/script.js"></script>
+    <!-- scripts -->
+  </body>
+</html>

@@ -1,0 +1,116 @@
+
+    /* ===== demo layout (left content + right panel) ===== */
+    :root{
+      --purple: #6b26ff;
+      --muted: #8f97a1;
+      --profile-w: 320px;
+      --profile-collapsed-w: 160px;
+    }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+    .page {
+      display:flex;
+      height:100vh;
+      width:100%;
+      background:#fafbfc;
+    }
+    .left {
+      flex:1;
+      padding:28px;
+    }
+
+    /* ===== profile panel ===== */
+    .profile-panel{
+      width:var(--profile-w);
+      min-width:var(--profile-w);
+      background:#fff;
+      border-left:1px solid #eef0f4;
+      box-shadow: 0 2px 10px rgba(20,20,20,0.03);
+      display:flex;
+      flex-direction:column;
+      padding:18px;
+      box-sizing:border-box;
+      transition: width .28s ease, padding .28s ease;
+    }
+
+    /* collapsed */
+    .profile-panel.collapsed {
+      width:var(--profile-collapsed-w);
+      min-width:var(--profile-collapsed-w);
+      padding:12px;
+    }
+
+    .profile-panel.collapsed {
+        .profile-name {
+            display: none;
+        }
+    }
+
+    /* top area */
+    .profile-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .profile-info{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .profile-avatar{
+      width:72px;height:72px;border-radius:50%;overflow:hidden;flex-shrink:0;
+    }
+    .profile-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+
+    .profile-name{line-height:1;}
+    .profile-name .name{font-weight:700;font-size:16px;color:#25282b;}
+    .profile-name .role{font-size:13px;color:var(--muted);margin-top:4px;}
+    .profile-name .loc{font-size:12px;color:#9aa0ac;margin-top:6px;display:flex;align-items:center;gap:6px}
+
+    /* collapse btn */
+    .profile-toggle{
+      width:36px;height:36px;border-radius:8px;border:1px solid #eef0f4;background:#fff;
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;box-shadow:none;
+    }
+    .profile-toggle i{transition:transform .22s ease;}
+    .profile-panel.collapsed .profile-toggle i{transform:rotate(180deg);}
+
+    /* body content */
+    .profile-body{margin-top:16px;display:block;overflow:auto;padding-bottom:8px;}
+    .profile-panel.collapsed .profile-body{display:none;} /* hide when collapsed */
+
+    .section-title{font-weight:600;margin:6px 0 10px 0;color:#222;font-size:14px}
+    .add-btn{padding:6px 10px;border-radius:10px;font-weight:600;font-size:13px}
+
+    /* job cards */
+    .job-card{
+      display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;color:#fff;margin-bottom:12px;position:relative;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.04);
+    }
+    .job-card .score{width:56px;height:56px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;background:rgba(255,255,255,0.12)}
+    .job-card .info{flex:1}
+    .job-card .title{font-weight:700}
+    .job-card .meta{font-size:13px;opacity:0.95}
+    .job-card .switch{flex-shrink:0}
+
+    .job-card.orange{background:linear-gradient(90deg,#ff8c60,#ff7338)}
+    .job-card.purple{background:linear-gradient(90deg,#6b26ff,#5b1fd8)}
+
+    /* reminders */
+    .reminders{margin-top:6px;padding:0;list-style:none}
+    .rem-item{display:flex;align-items:flex-start;gap:10px;padding:10px;border-radius:10px}
+    .rem-dot{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--purple);background:rgba(107,38,255,0.06)}
+    .rem-text{flex:1;font-size:14px;color:#2b2e32}
+    .rem-time{font-size:12px;color:#9aa0ac;white-space:nowrap;margin-left:8px}
+
+    /* small helpers */
+    .muted{color:var(--muted);font-size:13px}
+    .mb8{margin-bottom:8px}
+
+    /* responsive: fix right panel on small screens */
+    @media (max-width:880px){
+      .profile-panel{position:fixed;right:0;top:0;height:100vh;z-index:1200}
+      .left{padding-bottom:120px} /* demo */
+    }
