@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applify - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f6fa;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #fff;
+            padding: 24px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-250px);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            margin-right: 12px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0 16px;
+        }
+
+        .nav-item {
+            margin-bottom: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            color: #718096;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: #f7fafc;
+            color: #667eea;
+        }
+
+        .nav-link.active {
+            background: #667eea;
+            color: #fff;
+        }
+
+        .nav-link i {
+            width: 20px;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+
+        .upgrade-card {
+            margin: 24px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 24px;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upgrade-card::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .upgrade-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .upgrade-card h5 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .upgrade-card p {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .upgrade-btn {
+            background: #fff;
+            color: #667eea;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 24px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        /* Topbar */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 10px 16px 10px 40px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            width: 300px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #cbd5e0;
+        }
+
+        .search-btn {
+            background: #667eea;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #5568d3;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            background: #f7fafc;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Stats Cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .stat-info h6 {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #48bb78;
+            margin-top: 4px;
+        }
+
+        .chart-mini {
+            width: 80px;
+            height: 80px;
+        }
+
+        /* Dashboard Content */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .chart-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .chart-filter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #667eea;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        .chart-container {
+            height: 300px;
+        }
+
+        .legend-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        /* Jobs Card */
+        .jobs-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .jobs-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .add-btn {
+            background: #667eea;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: #5568d3;
+        }
+
+        .job-item {
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .job-item:hover {
+            transform: translateX(4px);
+        }
+
+        .job-item.orange {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: #fff;
+        }
+
+        .job-item.purple {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+        .job-count {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .job-details {
+            text-align: right;
+        }
+
+        .job-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .job-subtitle {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        /* Reminders */
+        .reminders-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .reminder-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .reminder-item:hover {
+            background: #f7fafc;
+        }
+
+        .reminder-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .reminder-icon.purple {
+            background: #e9d8fd;
+            color: #805ad5;
+        }
+
+        .reminder-icon.yellow {
+            background: #fef5e7;
+            color: #f39c12;
+        }
+
+        .reminder-icon.red {
+            background: #fed7d7;
+            color: #f56565;
+        }
+
+        .reminder-icon.green {
+            background: #c6f6d5;
+            color: #38a169;
+        }
+
+        .reminder-content {
+            flex: 1;
+        }
+
+        .reminder-text {
+            font-size: 13px;
+            color: #1a202c;
+            margin-bottom: 2px;
+        }
+
+        .reminder-time {
+            font-size: 11px;
+            color: #a0aec0;
+        }
+
+        .profile-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 4px;
+        }
+
+        .profile-role {
+            font-size: 13px;
+            color: #718096;
+            margin-bottom: 8px;
+        }
+
+        .profile-location {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #667eea;
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #667eea;
+            color: #fff;
+            border: none;
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 999;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-250px);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .topbar-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-box {
+                width: 100%;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">
+            <div class="logo-icon">A</div>
+            <span class="logo-text">Applify</span>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Jobs</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="far fa-calendar-alt"></i>
+                    <span>Schedule</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="far fa-file-alt"></i>
+                    <span>Documents</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Statistics</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Community</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="far fa-comment-dots"></i>
+                    <span>Messages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="upgrade-card">
+            <div class="upgrade-icon">🚀</div>
+            <h5>Upgrade to Premium</h5>
+            <p>Go Pro to unlock more features</p>
+            <button class="upgrade-btn">Upgrade</button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Topbar -->
+        <div class="topbar">
+            <h1 class="page-title">Dashboard</h1>
+            <div class="topbar-right">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search">
+                </div>
+                <button class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="icon-btn">
+                    <i class="far fa-question-circle"></i>
+                </button>
+                <button class="icon-btn">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="user-avatar">CJ</div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h6>Total Applications</h6>
+                        <div class="stat-value">5672</div>
+                        <div class="stat-change">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+74%</span>
+                            <span style="color: #a0aec0; margin-left: 4px;">+145.5k</span>
+                        </div>
+                    </div>
+                    <canvas id="chart1" class="chart-mini"></canvas>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h6>Shortlisted Candidates</h6>
+                        <div class="stat-value">3045</div>
+                        <div class="stat-change" style="color: #ecc94b;">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+40%</span>
+                            <span style="color: #a0aec0; margin-left: 4px;">+40.5k</span>
+                        </div>
+                    </div>
+                    <canvas id="chart2" class="chart-mini"></canvas>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h6>Rejected Candidates</h6>
+                        <div class="stat-value">1055</div>
+                        <div class="stat-change" style="color: #f56565;">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+4%</span>
+                            <span style="color: #a0aec0; margin-left: 4px;">+45k</span>
+                        </div>
+                    </div>
+                    <canvas id="chart3" class="chart-mini"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Charts -->
+        <div class="content-grid">
+            <div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Statistics of Active Applications</h3>
+                        <button class="chart-filter">
+                            <i class="far fa-calendar"></i>
+                            Week
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                    <div class="legend-list">
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #667eea;"></span>
+                            <span>Applications</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #f6ad55;"></span>
+                            <span>Shortlisted</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #fc8181;"></span>
+                            <span>Rejected</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #cbd5e0;"></span>
+                            <span>On Hold</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card" style="margin-top: 24px;">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Applications Received Time</h3>
+                        <button class="chart-filter">
+                            <i class="far fa-calendar"></i>
+                            Today
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="profile-section">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23f093fb'/%3E%3C/svg%3E" alt="Profile" class="profile-avatar">
+                    <h4 class="profile-name">Candace Jules</h4>
+                    <p class="profile-role">Director of Recruiting</p>
+                    <div class="profile-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>New York, US</span>
+                    </div>
+                </div>
+
+                <div class="jobs-card">
+                    <div class="jobs-header">
+                        <h3 class="chart-title">Jobs Posted</h3>
+                        <button class="add-btn">
+                            <i class="fas fa-plus"></i>
+                            Add
+                        </button>
+                    </div>
+                    <div class="job-item orange">
+                        <div class="job-count">95</div>
+                        <div class="job-details">
+                            <div class="job-title">Sr. Android Developer</div>
+                            <div class="job-subtitle">Total Applications</div>
+                        </div>
+                    </div>
+                    <div class="job-item purple">
+                        <div class="job-count">80</div>
+                        <div class="job-details">
+                            <div class="job-title">UX/UI Designer</div>
+                            <div class="job-subtitle">Total Applications</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card" style="margin-top: 24px;">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Acquisitions</h3>
+                        <button class="chart-filter">
+                            <i class="far fa-calendar"></i>
+                            Month
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                    <div class="chart-container" style="height: 200px;">
+                        <canvas id="acquisitionsChart"></canvas>
+                    </div>
+                    <div class="legend-list" style="margin-top: 16px;">
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #667eea;"></span>
+                            <span>Applications - 80%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #f6ad55;"></span>
+                            <span>Shortlisted - 55%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #fc8181;"></span>
+                            <span>Rejected - 47%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #cbd5e0;"></span>
+                            <span>On Hold - 35%</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #48bb78;"></span>
+                            <span>Finalised - 24%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-card" style="margin-top: 24px;">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Candidates by Gender</h3>
+                    </div>
+                    <div class="chart-container" style="height: 200px;">
+                        <canvas id="genderChart"></canvas>
+                    </div>
+                    <div class="legend-list" style="margin-top: 16px; justify-content: center;">
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #667eea;"></span>
+                            <span>Male</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background: #fc8181;"></span>
+                            <span>Female</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reminders-card" style="margin-top: 24px;">
+                    <div class="chart-header" style="margin-bottom: 16px;">
+                        <h3 class="chart-title">Reminders</h3>
+                        <i class="far fa-bell" style="color: #a0aec0;"></i>
+                    </div>
+                    <div class="reminder-item">
+                        <div class="reminder-icon purple">
+                            <i class="far fa-clock"></i>
+                        </div>
+                        <div class="reminder-content">
+                            <div class="reminder-text">Your subscription expires Today.</div>
+                            <div class="reminder-time">8:30 PM</div>
+                        </div>
+                    </div>
+                    <div class="reminder-item">
+                        <div class="reminder-icon yellow">
+                            <i class="fas fa-exclamation"></i>
+                        </div>
+                        <div class="reminder-content">
+                            <div class="reminder-text">There are 4 new applications for iOS Developer Post.</div>
+                            <div class="reminder-time">8:32 PM</div>
+                        </div>
+                    </div>
+                    <div class="reminder-item">
+                        <div class="reminder-icon red">
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <div class="reminder-content">
+                            <div class="reminder-text">You have closed the job post for Design Lead.</div>
+                            <div class="reminder-time">9:00 PM</div>
+                        </div>
+                    </div>
+                    <body class="reminder-item">
+                        <div class="reminder-icon green">
+                            <i class="far fa-file-alt"></i>
+                        </div>
+                        <div class="reminder-content">
+
+              </div>
+            </body>
