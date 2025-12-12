@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- styles -->
+    <link rel="stylesheet" href="../assets/css/aos.css">
+    <link rel="stylesheet" href="../assets/css/slick.css">
+    <link rel="stylesheet" href="../assets/css/slick-theme.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css" />
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- styles -->
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- body content start -->
+<div class="d-flex" style="height:100vh;">
+
+    <!-- SIDEBAR -->
+    <aside class="app-sidebar shadow-sm" id="sidebar">
+
+      <!-- Collapse Button Inside Sidebar -->
+      <div class="sidebar-top">
+        <div class="logo-wrap">
+          <div class="d-flex align-items-center gap-3">
+            <div class="brand-mark">A</div>
+            <div class="brand-text">Applify</div>
+          </div>
+
+          <button id="toggleBtn" class="collapse-btn btn btn-outline-primary btn-sm" aria-label="Toggle sidebar">
+            <i class="bi bi-list" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <nav class="nav-col position-relative" role="menu" aria-label="Main navigation">
+        <a href="#" class="nav-item active" data-tab="dashboard" role="menuitem" tabindex="0">
+          <i class="bi bi-grid-3x3-gap-fill"></i><span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="jobs" role="menuitem" tabindex="0">
+          <i class="bi bi-briefcase"></i><span>Jobs</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="schedule" role="menuitem" tabindex="0">
+          <i class="bi bi-calendar-event"></i><span>Schedule</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="documents" role="menuitem" tabindex="0">
+          <i class="bi bi-folder2-open"></i><span>Documents</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="statistics" role="menuitem" tabindex="0">
+          <i class="bi bi-bar-chart"></i><span>Statistics</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="community" role="menuitem" tabindex="0">
+          <i class="bi bi-people"></i><span>Community</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="messages" role="menuitem" tabindex="0">
+          <i class="bi bi-chat-dots"></i><span>Messages</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="logout" role="menuitem" tabindex="0">
+          <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+        </a>
+
+        <div class="edge-pill d-none d-md-block" aria-hidden="true"></div>
+      </nav>
+
+      <a class="upgrade-card" href="#">
+        <img src="../assets/images/upgrade-img.png" alt="upgrade-img">
+      </a>
+    </aside>
+
+    <!-- MAIN CONTENT (example panels tied to data-tab values) -->
+    <main class="main-area flex-grow-1 p-4">
+      <div class="d-flex align-items-start gap-3 mb-3">
+        <!-- keep a top toggle also if you want (optional) -->
+        <h3 id="panelTitle">Dashboard</h3>
+      </div>
+
+      <section class="tab-panel" data-panel="dashboard">
+        <h4>Dashboard</h4>
+        <p>Dashboard content here...</p>
+      </section>
+
+      <section class="tab-panel" data-panel="jobs" style="display:none;">
+        <h4>Jobs</h4>
+        <p>Jobs content here...</p>
+      </section>
+
+      <section class="tab-panel" data-panel="schedule" style="display:none;">
+        <h4>Schedule</h4>
+        <p>Schedule content here...</p>
+      </section>
+
+      <section class="tab-panel" data-panel="documents" style="display:none;">
+        <h4>Documents</h4>
+      </section>
+
+      <section class="tab-panel" data-panel="statistics" style="display:none;">
+        <h4>Statistics</h4>
+      </section>
+
+      <section class="tab-panel" data-panel="community" style="display:none;">
+        <h4>Community</h4>
+      </section>
+
+      <section class="tab-panel" data-panel="messages" style="display:none;">
+        <h4>Messages</h4>
+      </section>
+
+      <section class="tab-panel" data-panel="logout" style="display:none;">
+        <h4>Logout</h4>
+        <p>Perform logout flow...</p>
+      </section>
+    </main>
+
+  </div>
+
+    <!-- body content end -->
+
+    <!-- scripts -->
+    <script src="../assets/js/jquery.slim.min.js"></script>
+    <script src="../assets/js/aos.js"></script>
+    <script src="../assets/js/slick.min.js"></script>
+    <script src="../assets/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/script.js"></script>
+    <!-- scripts -->
+</body>
+
+</html>
