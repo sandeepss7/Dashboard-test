@@ -1,28 +1,1537 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- styles -->
-    <link rel="stylesheet" href="../assets/css/aos.css">
-    <link rel="stylesheet" href="../assets/css/slick.css">
-    <link rel="stylesheet" href="../assets/css/slick-theme.css">
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/style.css" />
-    <!-- styles -->
-    <title>Document</title>
-  </head>
-  <body>
-    <!-- body content start -->
-    <!-- body content end -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Applify Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    <!-- scripts -->
-    <script src="../assets/js/jquery.slim.min.js"></script>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f7f8fc;
+      overflow-x: hidden;
+    }
+
+    .dashboard-wrapper {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .app-sidebar {
+      width: 220px;
+      height: 100vh;
+      background: #fff;
+      border-right: 1px solid #efeff4;
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: width 0.3s ease;
+      position: relative;
+    }
+
+    .app-sidebar.collapsed {
+      width: 100px;
+    }
+
+    .app-sidebar.collapsed .brand-text,
+    .app-sidebar.collapsed .nav-item span,
+    .app-sidebar.collapsed .upgrade-card {
+      display: none;
+    }
+
+    .sidebar-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 20px;
+      position: relative;
+    }
+
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #6b26ff, #ff9a00);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-weight: bold;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: #222;
+      transition: opacity 0.3s;
+    }
+
+    .collapse-btn {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      color: #9aa0ac;
+      padding: 6px;
+      border-radius: 6px;
+      transition: background 0.15s ease, transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    .collapse-btn:hover {
+      background: #f6f7fb;
+    }
+
+    .app-sidebar.collapsed .collapse-btn i {
+      transform: rotate(180deg);
+      transition: transform 0.25s ease;
+    }
+
+    .nav-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+      flex: 1;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 8px;
+      border-radius: 10px;
+      color: #9aa0ac;
+      font-size: 14px;
+      text-decoration: none;
+      transition: background 0.15s ease, color 0.15s ease, transform 0.08s ease;
+      min-height: 48px;
+      position: relative;
+    }
+
+    .nav-item:hover {
+      background: #f6f7fb;
+      color: #444;
+    }
+
+    .nav-item.active {
+      background: rgba(107, 38, 255, 0.08);
+      color: #6b26ff;
+      box-shadow: 0 4px 18px rgba(107, 38, 255, 0.06);
+    }
+
+    .nav-item i {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .nav-item span {
+      transition: opacity 0.3s;
+      white-space: nowrap;
+    }
+
+    /* Purple Side Indicator */
+    .edge-pill {
+      position: absolute;
+      right: 2px;
+      top: 2px;
+      width: 6px;
+      height: 38px;
+      background: #6b26ff;
+      border-radius: 20px;
+      transition: top 220ms cubic-bezier(0.2, 0.9, 0.2, 1), height 220ms cubic-bezier(0.2, 0.9, 0.2, 1), opacity 160ms ease;
+      will-change: top, height, opacity;
+    }
+
+    .app-sidebar.collapsed .edge-pill {
+      opacity: 0;
+    }
+
+    .upgrade-card {
+      margin-top: auto;
+      display: block;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: opacity 0.3s;
+    }
+
+    .upgrade-card img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      transition: margin-right 0.3s ease;
+    }
+
+    .main-area.with-profile {
+      margin-right: 360px;
+    }
+
+    .main-section__head1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 0;
+    }
+
+    .form-control {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+
+    .btn-outline-success {
+      border-color: #667eea;
+      color: #667eea;
+      border-radius: 8px;
+      margin-left: 8px;
+    }
+
+    .btn-outline-success:hover {
+      background: #667eea;
+      border-color: #667eea;
+      color: white;
+    }
+
+    /* ===== STAT CARDS ===== */
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .stat-card .left {
+      flex: 1;
+    }
+
+    .stat-card .label {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .big {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1a202c;
+      margin: 8px 0;
+    }
+
+    .stat-card .sub {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #059669;
+    }
+
+    .stat-card .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .chart-wrap {
+      position: relative;
+      width: 100px;
+      height: 100px;
+    }
+
+    .percent-badge {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .percent-badge #pLabel1,
+    .percent-badge #pLabel2,
+    .percent-badge #pLabel3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a202c;
+    }
+
+    .percent-badge small {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      color: white;
+      margin-top: 4px;
+    }
+
+    /* ===== CHART CARDS ===== */
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border: none;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0;
+      margin-bottom: 24px;
+      background: transparent;
+      border: none;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a202c;
+      margin: 0;
+    }
+
+    .time-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: #f9fafb;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .time-selector-icon {
+      width: 16px;
+      height: 16px;
+      fill: #6b7280;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin-bottom: 16px;
+    }
+
+    .legend-container {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .legend-text {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    /* ===== STATS LIST ===== */
+    .stats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 130px;
+    }
+
+    .stat-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    .stat-bar-container {
+      position: relative;
+      flex: 1;
+      height: 8px;
+      background: #f3f4f6;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .stat-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      border-radius: 4px;
+      transition: width 1s ease;
+    }
+
+    .stat-percentage {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a202c;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .donut-chart-container {
+      position: relative;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .donut-center-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ===== PROFILE PANEL ===== */
+    .profile-panel {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 360px;
+      height: 100vh;
+      background: white;
+      border-left: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+      z-index: 90;
+      transform: translateX(100%);
+    }
+
+    .profile-panel.open {
+      transform: translateX(0);
+    }
+
+    .profile-top {
+      padding: 24px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .profile-info {
+      flex: 1;
+      display: flex;
+      gap: 16px;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-name {
+      flex: 1;
+    }
+
+    .profile-name .name {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 4px;
+    }
+
+    .profile-name .role {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .profile-name .loc {
+      font-size: 13px;
+      color: #667eea;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .profile-toggle {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #e5e7eb;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      flex-shrink: 0;
+    }
+
+    .profile-toggle:hover {
+      background: #f3f4f6;
+    }
+
+    .profile-toggle i {
+      transition: transform 0.3s;
+    }
+
+    .profile-panel.open .profile-toggle i {
+      transform: rotate(180deg);
+    }
+
+    .profile-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 16px;
+    }
+
+    .mb8 {
+      margin-bottom: 8px;
+    }
+
+    .add-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .job-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 10px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .job-card.orange {
+      background: linear-gradient(135deg, #ff8a65 0%, #ff6b6b 100%);
+      color: white;
+    }
+
+    .job-card.purple {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .job-card .score {
+      font-size: 28px;
+      font-weight: 700;
+      min-width: 50px;
+    }
+
+    .job-card .info {
+      flex: 1;
+    }
+
+    .job-card .title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .job-card .meta {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .job-card .switch input {
+      width: 44px;
+      height: 24px;
+    }
+
+    .reminders {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .rem-item {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      background: #f9fafb;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      align-items: flex-start;
+    }
+
+    .rem-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .rem-text {
+      flex: 1;
+      font-size: 13px;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    .rem-text strong {
+      color: #1a202c;
+      font-weight: 600;
+    }
+
+    .rem-text a {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    .rem-time {
+      font-size: 12px;
+      color: #9ca3af;
+      flex-shrink: 0;
+    }
+
+    .profile-toggle-btn {
+      position: fixed;
+      right: 24px;
+      top: 24px;
+      z-index: 95;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .profile-toggle-btn:hover {
+      background: #f3f4f6;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .app-sidebar {
+        position: fixed;
+        left: -280px;
+        z-index: 110;
+      }
+
+      .app-sidebar.mobile-open {
+        left: 0;
+      }
+
+      .main-area {
+        margin-right: 0 !important;
+      }
+
+      .profile-panel {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-wrapper">
+    <!-- LEFT SIDEBAR -->
+    <aside class="app-sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <div class="logo-wrap">
+          <div class="d-flex align-items-center gap-3">
+            <div class="brand-mark">A</div>
+            <div class="brand-text">Applify</div>
+          </div>
+          <button id="toggleBtn" class="collapse-btn" aria-label="Toggle sidebar">
+            <i class="bi bi-list"></i>
+          </button>
+        </div>
+      </div>
+
+      <nav class="nav-col">
+        <a href="#" class="nav-item active" data-tab="dashboard">
+          <i class="bi bi-grid-3x3-gap-fill"></i><span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="jobs">
+          <i class="bi bi-briefcase"></i><span>Jobs</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="schedule">
+          <i class="bi bi-calendar-event"></i><span>Schedule</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="documents">
+          <i class="bi bi-folder2-open"></i><span>Documents</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="statistics">
+          <i class="bi bi-bar-chart"></i><span>Statistics</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="community">
+          <i class="bi bi-people"></i><span>Community</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="messages">
+          <i class="bi bi-chat-dots"></i><span>Messages</span>
+        </a>
+        <a href="#" class="nav-item" data-tab="logout">
+          <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+        </a>
+      </nav>
+
+      <a class="upgrade-card" href="#">
+        <img src="../assets/images/upgrade-img.png" alt="Upgrade to Premium">
+      </a>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-area" id="mainArea">
+      <section class="main-section">
+    <div class="container">
+      <div class="d-flex justify-content-between">
+        <h1 class="main-section__head1">Dashboard</h1>
+        <form class="d-flex me-5">
+          <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
+        </form>
+      </div>
+ <div class="row gy-3 mt-3 mb-3">
+      <!-- Card 1 -->
+      <div class="col-md-4">
+        <div class="stat-card" id="card-1" data-initial="74">
+          <div class="left">
+            <div class="label">Total Applications</div>
+            <h2 class="big" id="big-1">5,672</h2>
+            <div class="sub"><div class="dot" style="background:#6f3cf1"></div><div>+14% Inc</div></div>
+          </div>
+
+          <div class="chart-wrap">
+            <canvas id="chart1" aria-label="Total Applications progress" role="img"></canvas>
+            <div class="percent-badge">
+              <div id="pLabel1">+74%</div>
+              <small id="pSmall1" style="background:linear-gradient(135deg,#6f3cf1,#8c61ff)">+74%</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="col-md-4">
+        <div class="stat-card" id="card-2" data-initial="58">
+          <div class="left">
+            <div class="label">Active Users</div>
+            <h2 class="big" id="big-2">3,210</h2>
+            <div class="sub"><div class="dot" style="background:#17c3a2"></div><div>+8% Inc</div></div>
+          </div>
+
+          <div class="chart-wrap">
+            <canvas id="chart2" aria-label="Active Users progress" role="img"></canvas>
+            <div class="percent-badge">
+              <div id="pLabel2">+58%</div>
+              <small id="pSmall2" style="background:linear-gradient(135deg,#17c3a2,#3ae6c8)">+58%</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="col-md-4">
+        <div class="stat-card" id="card-3" data-initial="45">
+          <div class="left">
+            <div class="label">Completed Tasks</div>
+            <h2 class="big" id="big-3">1,203</h2>
+            <div class="sub"><div class="dot" style="background:#ff8a65"></div><div>+5% Inc</div></div>
+          </div>
+
+          <div class="chart-wrap">
+            <canvas id="chart3" aria-label="Completed Tasks progress" role="img"></canvas>
+            <div class="percent-badge">
+              <div id="pLabel3">+45%</div>
+              <small id="pSmall3" style="background:linear-gradient(135deg,#ff8a65,#ff6b6b)">+45%</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- charts -->
+    <!-- First Row -->
+        <div class="row">
+            <!-- Weekly Statistics Chart -->
+            <div class="col-lg-7 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Statistics of Active Applications</h2>
+                        <div class="time-selector" id="weekSelector">
+                            <svg class="time-selector-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+                            </svg>
+                            <span class="time-selector-text">Week</span>
+                            <span>▼</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="weeklyChart"></canvas>
+                    </div>
+                    <div class="legend-container">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #805ad5;"></div>
+                            <span class="legend-text">Applications</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #ecc94b;"></div>
+                            <span class="legend-text">Shortlisted</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #f56565;"></div>
+                            <span class="legend-text">Rejected</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #c3bef0;"></div>
+                            <span class="legend-text">On Hold</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Acquisitions Stats -->
+            <div class="col-lg-5 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Acquisitions</h2>
+                        <div class="time-selector" id="monthSelector">
+                            <svg class="time-selector-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+                            </svg>
+                            <span class="time-selector-text">Month</span>
+                            <span>▼</span>
+                        </div>
+                    </div>
+                    <div class="stats-list">
+                        <div class="stat-item">
+                            <div class="stat-info">
+                                <div class="stat-dot" style="background: #805ad5;"></div>
+                                <span class="stat-label">Applications</span>
+                            </div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar" style="background: #805ad5; width: 0%; z-index: 4;" data-width="80"></div>
+                                <div class="stat-bar" style="background: #ecc94b; width: 0%; z-index: 3;" data-width="55"></div>
+                                <div class="stat-bar" style="background: #f56565; width: 0%; z-index: 2;" data-width="47"></div>
+                                <div class="stat-bar" style="background: #c3bef0; width: 0%; z-index: 1;" data-width="38"></div>
+                            </div>
+                            <span class="stat-percentage">80%</span>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-info">
+                                <div class="stat-dot" style="background: #ecc94b;"></div>
+                                <span class="stat-label">Shortlisted</span>
+                            </div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar" style="background: #ecc94b; width: 0%; z-index: 3;" data-width="55"></div>
+                                <div class="stat-bar" style="background: #f56565; width: 0%; z-index: 2;" data-width="47"></div>
+                                <div class="stat-bar" style="background: #c3bef0; width: 0%; z-index: 1;" data-width="38"></div>
+                            </div>
+                            <span class="stat-percentage">55%</span>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-info">
+                                <div class="stat-dot" style="background: #f56565;"></div>
+                                <span class="stat-label">Rejected</span>
+                            </div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar" style="background: #f56565; width: 0%; z-index: 2;" data-width="47"></div>
+                                <div class="stat-bar" style="background: #c3bef0; width: 0%; z-index: 1;" data-width="38"></div>
+                            </div>
+                            <span class="stat-percentage">47%</span>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-info">
+                                <div class="stat-dot" style="background: #c3bef0;"></div>
+                                <span class="stat-label">On Hold</span>
+                            </div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar" style="background: #c3bef0; width: 0%; z-index: 1;" data-width="38"></div>
+                            </div>
+                            <span class="stat-percentage">38%</span>
+                        </div>
+
+                        <div class="stat-item">
+                            <div class="stat-info">
+                                <div class="stat-dot" style="background: #48bb78;"></div>
+                                <span class="stat-label">Finalised</span>
+                            </div>
+                            <div class="stat-bar-container">
+                                <div class="stat-bar" style="background: #48bb78; width: 0%;" data-width="24"></div>
+                            </div>
+                            <span class="stat-percentage">24%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row -->
+        <div class="row">
+            <!-- Applications Received Time -->
+            <div class="col-lg-7 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Applications Received Time</h2>
+                        <div class="time-selector" id="todaySelector">
+                            <svg class="time-selector-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+                            </svg>
+                            <span class="time-selector-text">Today</span>
+                            <span>▼</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidates by Gender -->
+            <div class="col-lg-5 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Candidates by Gender</h2>
+                    </div>
+                    <div class="donut-chart-container">
+                        <canvas id="genderChart"></canvas>
+                        <div class="donut-center-icon">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" fill="#9f7aea"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="legend-container">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #805ad5;"></div>
+                            <span class="legend-text">Male</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #f56565;"></div>
+                            <span class="legend-text">Female</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!--  -->
+    </div>
+  </section>
+    </main>
+
+    <!-- PROFILE PANEL -->
+    <aside class="profile-panel" id="profilePanel">
+      <div class="profile-top">
+        <div class="profile-info">
+          <div class="profile-avatar">
+            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=400&auto=format&fit=crop" alt="Profile">
+          </div>
+          <div class="profile-name">
+            <div class="name">Candace Jules</div>
+            <div class="role">Director of Recruiting</div>
+            <div class="loc"><i class="bi bi-geo-alt-fill"></i> New York, US</div>
+          </div>
+        </div>
+        <button class="profile-toggle" id="profileToggle">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="profile-body">
+        <div class="d-flex justify-content-between align-items-center mb8">
+          <div class="section-title">Jobs Posted</div>
+          <button class="btn btn-primary add-btn">+ Add</button>
+        </div>
+
+        <div class="job-card orange">
+          <div class="score">95</div>
+          <div class="info">
+            <div class="title">Sr. Android Developer</div>
+            <div class="meta">Total Applications</div>
+          </div>
+          <div class="switch">
+            <input type="checkbox" checked>
+          </div>
+        </div>
+
+        <div class="job-card purple">
+          <div class="score">80</div>
+          <div class="info">
+            <div class="title">UX/UI Designer</div>
+            <div class="meta">Total Applications</div>
+          </div>
+          <div class="switch">
+            <input type="checkbox" checked>
+          </div>
+        </div>
+
+        <div class="section-title" style="margin-top:24px">Reminders</div>
+        <ul class="reminders">
+          <li class="rem-item">
+            <div class="rem-dot"><i class="bi bi-clock"></i></div>
+            <div class="rem-text">Your subscription expires <strong>Today</strong>. <a href="#">Renew Now</a></div>
+            <div class="rem-time">6:30 PM</div>
+          </li>
+
+          <li class="rem-item">
+            <div class="rem-dot" style="background:rgba(255,210,95,0.07);color:#d97706"><i class="bi bi-envelope"></i></div>
+            <div class="rem-text">There are <strong>4 new applications</strong> for iOS Developer Post.</div>
+            <div class="rem-time">5:30 PM</div>
+          </li>
+
+          <li class="rem-item">
+            <div class="rem-dot" style="background:rgba(255,80,80,0.06);color:#ff4d4f"><i class="bi bi-x-circle"></i></div>
+            <div class="rem-text">You have closed the job post for Design Lead.</div>
+            <div class="rem-time">5:00 PM</div>
+          </li>
+
+          <li class="rem-item">
+            <div class="rem-dot" style="background:rgba(72,187,120,0.08);color:#48bb78"><i class="bi bi-file-text"></i></div>
+            <div class="rem-text">You have drafted a job post for <strong>Web Developer</strong>.</div>
+            <div class="rem-time">4:45 PM</div>
+          </li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- FLOATING PROFILE TOGGLE BUTTON -->
+    <button class="profile-toggle-btn" id="floatingProfileBtn" title="Toggle Profile Panel">
+      <i class="bi bi-person-circle" style="font-size: 24px; color: #667eea;"></i>
+    </button>
+  </div>
+
+
+  <script src="../assets/js/jquery.slim.min.js"></script>
     <script src="../assets/js/aos.js"></script>
     <script src="../assets/js/slick.min.js"></script>
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/script.js"></script>
-    <!-- scripts -->
-  </body>
+  <!-- <script>
+    document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggleBtn');
+  const navCol = document.querySelector('.app-sidebar .nav-col');
+  const navItems = Array.from(document.querySelectorAll('.app-sidebar .nav-item'));
+  let edgePill = document.querySelector('.app-sidebar .edge-pill');
+  const panelTitle = document.getElementById('panelTitle');
+
+  // create edge-pill if missing
+  if (!edgePill) {
+    edgePill = document.createElement('div');
+    edgePill.className = 'edge-pill d-none d-md-block';
+    navCol.appendChild(edgePill);
+  }
+
+  // helper to compute position relative to nav-col
+  function positionEdgePillFor(item) {
+    if (!item || !edgePill) return;
+    const navRect = navCol.getBoundingClientRect();
+    const itemRect = item.getBoundingClientRect();
+
+    const topWithin = itemRect.top - navRect.top;
+    edgePill.style.top = `${topWithin}px`;
+    edgePill.style.height = `${itemRect.height}px`;
+    edgePill.style.opacity = '1';
+  }
+
+  // set active item and optionally switch panels
+  function setActiveItem(item, { switchPanel = true } = {}) {
+    if (!item) return;
+    navItems.forEach(i => i.classList.remove('active'));
+    item.classList.add('active');
+
+    // move the pill (but hide if collapsed)
+    if (sidebar.classList.contains('collapsed')) {
+      edgePill.style.opacity = '0';
+    } else {
+      positionEdgePillFor(item);
+    }
+
+    // switch main content panels
+    if (switchPanel) {
+      const tabName = item.dataset.tab;
+      if (tabName) {
+        const panels = document.querySelectorAll('.tab-panel');
+        panels.forEach(p => {
+          p.style.display = (p.dataset.panel === tabName) ? '' : 'none';
+        });
+        if (panelTitle) panelTitle.textContent = (item.innerText || tabName).trim();
+        // update URL hash (optional). Uncomment if you want deep-linking:
+        // history.replaceState(null, '', `#${tabName}`);
+      }
+    }
+  }
+
+  // initialize with active or first item
+  const initial = navItems.find(i => i.classList.contains('active')) || navItems[0];
+  // delay to allow fonts/layout to settle
+  setTimeout(() => setActiveItem(initial, { switchPanel: true }), 30);
+
+  // attach item click & keyboard handlers
+  navItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      setActiveItem(item);
+    });
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        item.click();
+      }
+    });
+  });
+
+  // collapse toggle
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+
+      // icon rotation (toggle class on icon element)
+      const icon = toggleBtn.querySelector('i');
+      if (icon) icon.classList.toggle('rotated');
+
+      // hide/show edge pill on collapse/expand
+      if (sidebar.classList.contains('collapsed')) {
+        edgePill.style.opacity = '0';
+      } else {
+        // restore pill under the active item after the width transition completes
+        const activeNow = document.querySelector('.app-sidebar .nav-item.active') || navItems[0];
+        // use a slight timeout to match CSS transition timing
+        setTimeout(() => positionEdgePillFor(activeNow), 200);
+      }
+    });
+  }
+
+  // Optional: persist last active tab in localStorage
+  const STORAGE_KEY = 'applify_sidebar_active_tab';
+  // restore if present
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    const storedItem = navItems.find(i => i.dataset.tab === stored);
+    if (storedItem) setActiveItem(storedItem, { switchPanel: true });
+  }
+  // save on change
+  navItems.forEach(i => i.addEventListener('click', () => {
+    if (i.dataset.tab) localStorage.setItem(STORAGE_KEY, i.dataset.tab);
+  }));
+
+  // responsiveness: reposition pill on window resize (layout changes)
+  window.addEventListener('resize', () => {
+    const activeNow = document.querySelector('.app-sidebar .nav-item.active') || navItems[0];
+    if (!sidebar.classList.contains('collapsed')) positionEdgePillFor(activeNow);
+  });
+});
+
+
+    // Sidebar functionality with edge pill animation
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const navCol = document.querySelector('.app-sidebar .nav-col');
+    const navItems = Array.from(document.querySelectorAll('.app-sidebar .nav-item'));
+    let edgePill = document.querySelector('.app-sidebar .edge-pill');
+
+    // Create edge-pill if missing
+    if (!edgePill) {
+      edgePill = document.createElement('div');
+      edgePill.className = 'edge-pill d-none d-md-block';
+      navCol.appendChild(edgePill);
+    }
+
+    // Helper to position edge pill
+    function positionEdgePillFor(item) {
+      if (!item || !edgePill) return;
+      const navRect = navCol.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+      const topWithin = itemRect.top - navRect.top;
+      edgePill.style.top = `${topWithin}px`;
+      edgePill.style.height = `${itemRect.height}px`;
+      edgePill.style.opacity = '1';
+    }
+
+    // Set active item
+    function setActiveItem(item) {
+      if (!item) return;
+      navItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+
+      if (sidebar.classList.contains('collapsed')) {
+        edgePill.style.opacity = '0';
+      } else {
+        positionEdgePillFor(item);
+      }
+    }
+
+    // Initialize with active or first item
+    const initial = navItems.find(i => i.classList.contains('active')) || navItems[0];
+    setTimeout(() => setActiveItem(initial), 30);
+
+    // Attach item click handlers
+    navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        setActiveItem(item);
+      });
+    });
+
+    // Collapse toggle
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+
+      if (sidebar.classList.contains('collapsed')) {
+        edgePill.style.opacity = '0';
+      } else {
+        const activeNow = document.querySelector('.app-sidebar .nav-item.active') || navItems[0];
+        setTimeout(() => positionEdgePillFor(activeNow), 200);
+      }
+    });
+
+    // Reposition pill on window resize
+    window.addEventListener('resize', () => {
+      const activeNow = document.querySelector('.app-sidebar .nav-item.active') || navItems[0];
+      if (!sidebar.classList.contains('collapsed')) positionEdgePillFor(activeNow);
+    });
+
+    // Profile panel toggle
+    const profilePanel = document.getElementById('profilePanel');
+    const profileToggle = document.getElementById('profileToggle');
+    const floatingProfileBtn = document.getElementById('floatingProfileBtn');
+    const mainArea = document.getElementById('mainArea');
+
+    function toggleProfilePanel() {
+      profilePanel.classList.toggle('open');
+      if (window.innerWidth > 768) {
+        mainArea.classList.toggle('with-profile');
+      }
+    }
+
+    profileToggle.addEventListener('click', toggleProfilePanel);
+    floatingProfileBtn.addEventListener('click', toggleProfilePanel);
+
+    // Navigation items
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+      });
+    });
+
+
+       const weeklyData = {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [
+                {
+                    label: 'Rejected',
+                    data: [20, 20, 20, 20, 20, 20, 20],
+                    backgroundColor: '#f56565',
+                    borderRadius: 0,
+                    barThickness: 25
+                },
+                {
+                    label: 'Shortlisted',
+                    data: [45, 40, 48, 43, 45, 50, 48],
+                    backgroundColor: '#ecc94b',
+                    borderRadius: 0,
+                    barThickness: 25
+                },
+                {
+                    label: 'Applications',
+                    data: [20, 17, 22, 15, 30, 28, 24],
+                    backgroundColor: '#805ad5',
+                    borderRadius: 0,
+                    barThickness: 25
+                }
+            ]
+        };
+
+        // Chart Configuration
+        const config = {
+            type: 'bar',
+            data: weeklyData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        borderRadius: 8,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#a0aec0',
+                            font: {
+                                size: 13,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            color: '#a0aec0',
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: '#e2e8f0',
+                            drawBorder: false
+                        }
+                    }
+                }
+            }
+        };
+
+        // Initialize Chart
+        const ctx = document.getElementById('weeklyChart').getContext('2d');
+        const weeklyChart = new Chart(ctx, config);
+
+        // Timeline Chart Data (Applications Received Time)
+        const timelineData = {
+            labels: ['8 AM', '10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM'],
+            datasets: [{
+                label: 'Applications',
+                data: [50, 68, 72, 95, 65, 85, 90],
+                borderColor: '#f56565',
+                backgroundColor: 'rgba(245, 101, 101, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#f56565',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointHoverBackgroundColor: '#f56565',
+                borderWidth: 2.5
+            }]
+        };
+
+        const timelineConfig = {
+            type: 'line',
+            data: timelineData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        borderRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + '% applications';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#a0aec0',
+                            font: {
+                                size: 13,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            color: '#a0aec0',
+                            font: {
+                                size: 12
+                            },
+                            stepSize: 25
+                        },
+                        grid: {
+                            color: '#e2e8f0',
+                            drawBorder: false
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        };
+
+        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+        const timelineChart = new Chart(timelineCtx, timelineConfig);
+
+        // Gender Donut Chart
+        const genderData = {
+            labels: ['Male', 'Female'],
+            datasets: [{
+                data: [35, 65],
+                backgroundColor: ['#805ad5', '#f56565'],
+                borderWidth: 0,
+                cutout: '75%'
+            }]
+        };
+
+        const genderConfig = {
+            type: 'doughnut',
+            data: genderData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        borderRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        const genderChart = new Chart(genderCtx, genderConfig);
+
+        // Animate Progress Bars
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelectorAll('.stat-bar').forEach(bar => {
+                    const width = bar.getAttribute('data-width');
+                    bar.style.width = width + '%';
+                });
+            }, 300);
+        });
+
+        // Time Selector Click Handlers
+        document.getElementById('weekSelector').addEventListener('click', () => {
+            alert('Week selector clicked! You can implement dropdown functionality here.');
+        });
+
+        document.getElementById('monthSelector').addEventListener('click', () => {
+            alert('Month selector clicked! You can implement dropdown functionality here.');
+        });
+
+        document.getElementById('todaySelector').addEventListener('click', () => {
+            alert('Today selector clicked! You can implement dropdown functionality here.');
+        });
+  </script> -->
+</body>
 </html>

@@ -1,153 +1,344 @@
-// sidebar.js
+
+/*************************************************
+ * SIDEBAR + EDGE PILL + TABS (SINGLE SOURCE)
+ *************************************************/
 document.addEventListener('DOMContentLoaded', () => {
+
   const sidebar = document.getElementById('sidebar');
   const toggleBtn = document.getElementById('toggleBtn');
   const navCol = document.querySelector('.app-sidebar .nav-col');
   const navItems = Array.from(document.querySelectorAll('.app-sidebar .nav-item'));
-  let edgePill = document.querySelector('.app-sidebar .edge-pill');
   const panelTitle = document.getElementById('panelTitle');
 
-  // create edge-pill if missing
-  if (!edgePill) {
+  let edgePill = document.querySelector('.app-sidebar .edge-pill');
+
+  // Create edge pill if missing
+  if (!edgePill && navCol) {
     edgePill = document.createElement('div');
     edgePill.className = 'edge-pill d-none d-md-block';
     navCol.appendChild(edgePill);
   }
 
-  // helper to compute position relative to nav-col
   function positionEdgePillFor(item) {
     if (!item || !edgePill) return;
     const navRect = navCol.getBoundingClientRect();
     const itemRect = item.getBoundingClientRect();
-
-    const topWithin = itemRect.top - navRect.top;
-    edgePill.style.top = `${topWithin}px`;
+    edgePill.style.top = `${itemRect.top - navRect.top}px`;
     edgePill.style.height = `${itemRect.height}px`;
     edgePill.style.opacity = '1';
   }
 
-  // set active item and optionally switch panels
   function setActiveItem(item, { switchPanel = true } = {}) {
     if (!item) return;
+
     navItems.forEach(i => i.classList.remove('active'));
     item.classList.add('active');
 
-    // move the pill (but hide if collapsed)
     if (sidebar.classList.contains('collapsed')) {
       edgePill.style.opacity = '0';
     } else {
       positionEdgePillFor(item);
     }
 
-    // switch main content panels
     if (switchPanel) {
       const tabName = item.dataset.tab;
       if (tabName) {
-        const panels = document.querySelectorAll('.tab-panel');
-        panels.forEach(p => {
-          p.style.display = (p.dataset.panel === tabName) ? '' : 'none';
+        document.querySelectorAll('.tab-panel').forEach(p => {
+          p.style.display = p.dataset.panel === tabName ? '' : 'none';
         });
-        if (panelTitle) panelTitle.textContent = (item.innerText || tabName).trim();
-        // update URL hash (optional). Uncomment if you want deep-linking:
-        // history.replaceState(null, '', `#${tabName}`);
+        if (panelTitle) {
+          panelTitle.textContent = (item.innerText || tabName).trim();
+        }
+        localStorage.setItem('applify_sidebar_active_tab', tabName);
       }
     }
   }
 
-  // initialize with active or first item
-  const initial = navItems.find(i => i.classList.contains('active')) || navItems[0];
-  // delay to allow fonts/layout to settle
-  setTimeout(() => setActiveItem(initial, { switchPanel: true }), 30);
+  // Restore last tab
+  const stored = localStorage.getItem('applify_sidebar_active_tab');
+  const initial =
+    navItems.find(i => i.dataset.tab === stored) ||
+    navItems.find(i => i.classList.contains('active')) ||
+    navItems[0];
 
-  // attach item click & keyboard handlers
+  setTimeout(() => setActiveItem(initial), 30);
+
   navItems.forEach(item => {
-    item.addEventListener('click', (e) => {
+    item.addEventListener('click', e => {
       e.preventDefault();
       setActiveItem(item);
     });
-    item.addEventListener('keydown', (e) => {
+
+    item.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        item.click();
+        setActiveItem(item);
       }
     });
   });
 
-  // collapse toggle
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
+  toggleBtn?.addEventListener('click', () => {
 
-      // icon rotation (toggle class on icon element)
-      const icon = toggleBtn.querySelector('i');
-      if (icon) icon.classList.toggle('rotated');
+  // 📱 MOBILE & TABLET
+  if (window.innerWidth <= 880) {
+    // close profile first
+    profilePanel?.classList.remove('open');
 
-      // hide/show edge pill on collapse/expand
-      if (sidebar.classList.contains('collapsed')) {
-        edgePill.style.opacity = '0';
-      } else {
-        // restore pill under the active item after the width transition completes
-        const activeNow = document.querySelector('.app-sidebar .nav-item.active') || navItems[0];
-        // use a slight timeout to match CSS transition timing
-        setTimeout(() => positionEdgePillFor(activeNow), 200);
-      }
-    });
+    sidebar.classList.toggle('mobile-open');
+    return;
   }
 
-  // Optional: persist last active tab in localStorage
-  const STORAGE_KEY = 'applify_sidebar_active_tab';
-  // restore if present
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored) {
-    const storedItem = navItems.find(i => i.dataset.tab === stored);
-    if (storedItem) setActiveItem(storedItem, { switchPanel: true });
-  }
-  // save on change
-  navItems.forEach(i => i.addEventListener('click', () => {
-    if (i.dataset.tab) localStorage.setItem(STORAGE_KEY, i.dataset.tab);
-  }));
+  // 🖥️ DESKTOP
+  closeProfileIfOpen();
 
-  // responsiveness: reposition pill on window resize (layout changes)
+  sidebar.classList.toggle('collapsed');
+
+  const icon = toggleBtn.querySelector('i');
+  icon && icon.classList.toggle('rotated');
+
+  if (sidebar.classList.contains('collapsed')) {
+    edgePill && (edgePill.style.opacity = '0');
+  } else {
+    const activeNow =
+      document.querySelector('.app-sidebar .nav-item.active');
+    activeNow && setTimeout(() => positionEdgePillFor(activeNow), 200);
+  }
+});
+
+
+  
+
   window.addEventListener('resize', () => {
-    const activeNow = document.querySelector('.app-sidebar .nav-item.active') || navItems[0];
-    if (!sidebar.classList.contains('collapsed')) positionEdgePillFor(activeNow);
+    const activeNow =
+      document.querySelector('.app-sidebar .nav-item.active') || navItems[0];
+    if (!sidebar.classList.contains('collapsed')) {
+      positionEdgePillFor(activeNow);
+    }
+  });
+
+  /* in mobile sidebar */
+mobileSidebarToggle?.addEventListener('click', () => {
+
+  // close profile if open
+  profilePanel?.classList.remove('open');
+
+  const isOpen = sidebar.classList.toggle('mobile-open');
+
+  // 🔥 toggle button state
+  mobileSidebarToggle.classList.toggle('sidebar-open', isOpen);
+});
+
+
+
+navItems.forEach(item => {
+  item.addEventListener('click', () => {
+    if (window.innerWidth <= 880) {
+      sidebar.classList.remove('mobile-open');
+    }
   });
 });
 
 
-// profile-panel.js
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 880) {
+    sidebar.classList.remove('mobile-open');
+  }
+});
+
+
+  /*  */
+  /*************************************************
+   * PROFILE PANEL (UNCHANGED)
+   *************************************************/
   const profilePanel = document.getElementById('profilePanel');
   const profileToggle = document.getElementById('profileToggle');
-  const ICON = profileToggle?.querySelector('i');
-  const STORAGE_KEY = 'profile_panel_collapsed';
+  const floatingProfileBtn = document.getElementById('floatingProfileBtn');
+  const mainArea = document.getElementById('mainArea');
 
-  // restore state
-  if (localStorage.getItem(STORAGE_KEY) === '1') {
-    profilePanel.classList.add('collapsed');
-    if (ICON) ICON.classList.add('rotated');
-    profileToggle.setAttribute('aria-pressed', 'true');
-  } else {
-    profileToggle.setAttribute('aria-pressed', 'false');
+  function toggleProfilePanel() {
+    profilePanel.classList.toggle('open');
+    if (window.innerWidth > 768) {
+      mainArea.classList.toggle('with-profile');
+    }
   }
 
-  // toggle handler
-  profileToggle?.addEventListener('click', (e) => {
-    e.preventDefault();
-    const isCollapsed = profilePanel.classList.toggle('collapsed');
+  profileToggle?.addEventListener('click', toggleProfilePanel);
+  floatingProfileBtn?.addEventListener('click', toggleProfilePanel);
 
-    // rotate icon
-    if (ICON) ICON.classList.toggle('rotated', isCollapsed);
-    profileToggle.setAttribute('aria-pressed', String(isCollapsed));
-
-    // persist
-    localStorage.setItem(STORAGE_KEY, isCollapsed ? '1' : '0');
-  });
 });
-/* ---------------- */
+
+function closeSidebarIfOpen() {
+  if (sidebar && sidebar.classList.contains('collapsed') === false) {
+    sidebar.classList.add('collapsed');
+    edgePill && (edgePill.style.opacity = '0');
+  }
+}
+
+function closeProfileIfOpen() {
+  if (profilePanel && profilePanel.classList.contains('open')) {
+    profilePanel.classList.remove('open');
+    mainArea.classList.remove('with-profile');
+  }
+}
+
+function toggleProfilePanel() {
+  // 🔴 close sidebar first
+  closeSidebarIfOpen();
+
+  profilePanel.classList.toggle('open');
+
+  if (window.innerWidth > 880) {
+    mainArea.classList.toggle('with-profile');
+  }
+}
 
 
 
+/*************************************************
+ * DASHBOARD CHARTS (100% ORIGINAL CONFIG)
+ *************************************************/
+document.addEventListener('DOMContentLoaded', () => {
+
+  const weeklyChart = new Chart(
+    document.getElementById('weeklyChart').getContext('2d'),
+    {
+      type: 'bar',
+      data: {
+        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets: [
+          { label:'Rejected', data:[20,20,20,20,20,20,20], backgroundColor:'#f56565', barThickness:25 },
+          { label:'Shortlisted', data:[45,40,48,43,45,50,48], backgroundColor:'#ecc94b', barThickness:25 },
+          { label:'Applications', data:[20,17,22,15,30,28,24], backgroundColor:'#805ad5', barThickness:25 }
+        ]
+      },
+      options: {
+        responsive:true,
+        maintainAspectRatio:false,
+        plugins:{ legend:{ display:false }},
+        scales:{
+          x:{ stacked:true, grid:{ display:false }},
+          y:{ stacked:true, beginAtZero:true, max:100 }
+        }
+      }
+    }
+  );
+
+ // Timeline Chart Data (Applications Received Time)
+        const timelineData = {
+            labels: ['8 AM', '10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM'],
+            datasets: [{
+                label: 'Applications',
+                data: [50, 68, 72, 95, 65, 85, 90],
+                borderColor: '#f56565',
+                backgroundColor: 'rgba(245, 101, 101, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                pointBackgroundColor: '#f56565',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointHoverBackgroundColor: '#f56565',
+                borderWidth: 2.5
+            }]
+        };
+
+        const timelineConfig = {
+            type: 'line',
+            data: timelineData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        borderRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + '% applications';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#a0aec0',
+                            font: {
+                                size: 13,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            },
+                            color: '#a0aec0',
+                            font: {
+                                size: 12
+                            },
+                            stepSize: 25
+                        },
+                        grid: {
+                            color: '#e2e8f0',
+                            drawBorder: false
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        };
+
+        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+        const timelineChart = new Chart(timelineCtx, timelineConfig);
+  new Chart(
+    document.getElementById('genderChart').getContext('2d'),
+    {
+      type:'doughnut',
+      data:{
+        labels:['Male','Female'],
+        datasets:[{
+          data:[35,65],
+          backgroundColor:['#805ad5','#f56565'],
+          borderWidth:0,
+          cutout:'75%'
+        }]
+      },
+      options:{ plugins:{ legend:{ display:false }}}
+    }
+  );
+
+  // Animate Progress Bars
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelectorAll('.stat-bar').forEach(bar => {
+                    const width = bar.getAttribute('data-width');
+                    bar.style.width = width + '%';
+                });
+            }, 300);
+        });
+
+});
+
+
+/*************************************************
+ * FIRST CIRCLE CARD ANIMATION (FULL VERSION)
+ *************************************************/
 /* ---first circle animation */
 window.addEventListener('load', () => {
 
@@ -189,7 +380,7 @@ window.addEventListener('load', () => {
         responsive: false,
         maintainAspectRatio: false,
         cutout: '76%',
-        rotation: -90,      // make 0% start at top (keeps look like SVG)
+        rotation: -90,   
         circumference: 360,
         animation: {
           duration: 1100,
@@ -265,8 +456,3 @@ window.addEventListener('load', () => {
   }, 3500);
 
 }); // load
-/* ----------- */
-
-
-/* charts */
-

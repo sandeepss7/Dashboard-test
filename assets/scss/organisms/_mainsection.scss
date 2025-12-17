@@ -4,18 +4,17 @@ $muted: #9aa0b4;
 $shadow: rgba(20,20,40,0.06);
 
 .main-section {
-  padding: 20px 16px;
+  padding: 6px 20px 16px;
 
   &__head1 {
     font-size: 32px;
     font-weight: bold;
   }
 
-  // Use a namespaced card to avoid Bootstrap's .card conflicts
   .stat-card {
-    position: relative;       // <- so .menu absolute is positioned correctly
+    position: relative;      
     width: 100%;
-    max-width: 380px;         // responsive inside Bootstrap col
+    max-width: 380px;       
     background: $card-bg;
     border-radius: 14px;
     box-shadow: 0 8px 24px $shadow;
@@ -178,7 +177,6 @@ $shadow: rgba(20,20,40,0.06);
       padding: 14px;
       .big { font-size: 26px; }
       .chart-wrap { width: 86px; height:86px; }
-      .chart-wrap canvas { width: 76px !important; height: 76px !important; }
     }
   }
 

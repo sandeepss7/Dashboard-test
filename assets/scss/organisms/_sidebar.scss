@@ -70,23 +70,6 @@ $sidebar-width: 220px;
   gap: 6px;
   position: relative;
 
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 8px;
-    border-radius: 10px;
-    color: $muted;
-    font-size: 14px;
-    text-decoration: none;
-    transition: background .15s ease, color .15s ease, transform .08s ease;
-    min-height: 48px;
-
-    &:hover {
-      background: #f6f7fb;
-      color: #444;
-    }
-
     &.active {
       background: rgba($purple, 0.08);
       color: $purple;
@@ -97,20 +80,8 @@ $sidebar-width: 220px;
       font-size: 18px;
     }
   }
-}
 
-/* Purple Side Indicator */
-.edge-pill {
-  position: absolute;
-  right: 2px;
-  top: 2px;
-  width: 6px;
-  height: 38px;
-  background: $purple;
-  border-radius: 20px;
-  transition: top 220ms cubic-bezier(.2,.9,.2,1), height 220ms cubic-bezier(.2,.9,.2,1), opacity 160ms ease;
-  will-change: top, height, opacity;
-}
+
 
 /* Upgrade Box */
 .upgrade-card {
@@ -129,30 +100,30 @@ $sidebar-width: 220px;
   position: relative;
 }
 
-/* Collapse Button */
-.collapse-btn {
-  background: transparent;
-  border: none;
-  font-size: 18px;
-  color: $muted;
-  padding: 6px;
-  border-radius: 6px;
-  transition: background .15s ease, transform .2s ease;
+.btn-outline-primary:active:focus {
+  box-shadow: none;
 }
-
-.btn-outline-primary:active:focus { box-shadow: none; }
-.btn-outline-primary:focus { box-shadow: none; }
+.btn-outline-primary:focus {
+  box-shadow: none;
+}
 
 /* rotation for collapse icon */
 .app-sidebar.collapsed .collapse-btn i {
   transform: rotate(180deg);
-  transition: transform .25s ease;
+  transition: transform 0.25s ease;
 }
 
 /* collapse-btn icon rotate helper when toggled (JS sets .rotated on icon) */
-.collapse-btn i.rotated { transform: rotate(180deg); }
+.collapse-btn i.rotated {
+  transform: rotate(180deg);
+}
 
 /* responsive */
 @media (max-width: 768px) {
-  .app-sidebar { position: fixed; z-index: 1050; left: 0; top: 0; }
+  .app-sidebar {
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+  }
 }
